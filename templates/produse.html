@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Produse - Magazin Online</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <ul>
+          <li><a href="/">Acasă</a></li>
+          <li><a href="/produse">Produse</a></li>
+          <li><a href="/cart">Coș</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <h2>Produse Disponibile</h2>
+      {% for produs in produse %}
+      <div class="product">
+        <h3>{{ produs['name'] }}</h3>
+        <p>Preț: {{ produs['price'] }} RON</p>
+        <a href="/produs/{{ produs['id'] }}">Vezi detalii</a>
+        <!-- Formular pentru adăugare în coș -->
+        <form action="/add_to_cart/{{ produs['id'] }}" method="POST">
+          <button type="submit">Adaugă în coș</button>
+        </form>
+      </div>
+      {% endfor %}
+    </main>
+
+    <footer>
+      <p>&copy; 2024 Magazin Online</p>
+    </footer>
+  </body>
+</html>

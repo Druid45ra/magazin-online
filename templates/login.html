@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Magazin Online</title>
+  </head>
+  <body>
+    <h2>Login</h2>
+    <form method="POST" action="{{ url_for('login') }}">
+      {{ form.hidden_tag() }}
+      <div>
+        <label for="username">Username:</label>
+        {{ form.username(size=20) }}
+      </div>
+      <div>
+        <label for="password">Password:</label>
+        {{ form.password(size=20) }}
+      </div>
+      <div>
+        <button type="submit">Login</button>
+      </div>
+    </form>
+    <p>Nu ai cont? <a href="{{ url_for('register') }}">Creează un cont</a></p>
+  </body>
+</html>
