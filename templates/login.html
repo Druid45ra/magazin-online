@@ -1,26 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login - Magazin Online</title>
   </head>
   <body>
     <h2>Login</h2>
     <form method="POST" action="{{ url_for('login') }}">
-      {{ form.hidden_tag() }}
-      <div>
-        <label for="username">Username:</label>
-        {{ form.username(size=20) }}
-      </div>
-      <div>
-        <label for="password">Password:</label>
-        {{ form.password(size=20) }}
-      </div>
-      <div>
-        <button type="submit">Login</button>
-      </div>
-    </form>
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        <label for="username">Username</label>
+        {{ form.username(class="form-control", placeholder="Enter username") }}
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        {{ form.password(class="form-control", placeholder="Enter password") }}
+    </div>
+    <div class="form-group">
+        {{ form.submit(class="btn btn-primary") }}
+    </div>
+</form>
+
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %}
+    <ul>
+      {% for category, message in messages %}
+      <li class="{{ category }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %} {% endwith %}
     <p>Nu ai cont? <a href="{{ url_for('register') }}">Creează un cont</a></p>
   </body>
 </html>

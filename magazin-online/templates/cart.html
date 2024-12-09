@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coș de Cumpărături</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/">Acasă</a></li>
+                <li><a href="/produse">Produse</a></li>
+                <li><a href="/cart">Coș</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h2>Coșul de cumpărături</h2>
+        {% if cart %}
+            <ul>
+                {% for item in cart %}
+                <li class="cart-item">
+                    <span>{{ item['name'] }} - {{ item['price'] }} RON</span>
+                    <!-- Form pentru a elimina produsul din coș -->
+                    <form action="/remove_from_cart/{{ item['id'] }}" method="POST" style="display:inline;">
+                        <button type="submit">Șterge</button>
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+            <p><strong>Total:</strong> {{ total }} RON</p>
+        {% else %}
+            <p>Coșul este gol.</p>
+        {% endif %}
+        <a href="/produse" class="btn">Continuă cumpărăturile</a>
+    </main>
+    <footer>
+        <p>&copy; 2024 Magazin Online</p>
+    </footer>
+</body>
+</html>

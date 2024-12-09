@@ -3,32 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ product['name'] }} - Magazin Online</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <title>Produse</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="/">Acasă</a></li>
-                <li><a href="/produse">Produse</a></li>
-                <li><a href="/cart">Coș</a></li>
-                <li><a href="/contact">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <h2>{{ product['name'] }}</h2>
-        <p><strong>Preț:</strong> {{ product['price'] }} RON</p>
-        <p><strong>Descriere:</strong> {{ product['description'] }}</p>
-        <!-- Formular pentru adăugare în coș -->
-        <form action="/add_to_cart/{{ product['id'] }}" method="POST">
-            <button type="submit">Adaugă în coș</button>
-        </form>
-    </main>
-    <footer>
-        <p>&copy; 2024 Magazin Online</p>
-    </footer>
-    <script src="/static/js/script.js"></script>
+    <h1>Produsele noastre</h1>
+    <div class="product-list">
+        {% for product in produse %}
+        <div class="product-card">
+            <img src="{{ url_for('static', filename=product.image_path) }}" alt="{{ product.name }}" class="product-image">
+            <h2>{{ product.name }}</h2>
+            <p>{{ product.description }}</p>
+            <p><strong>{{ product.price }} RON</strong></p>
+        </div>
+        {% endfor %}
+    </div>
 </body>
 </html>

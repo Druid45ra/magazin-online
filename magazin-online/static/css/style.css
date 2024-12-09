@@ -152,23 +152,3 @@ header nav ul li a {
     padding: 1rem;
     background: white;
 }
-
-.product-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.product-card {
-    border: 1px solid #ddd;
-    padding: 15px;
-    border-radius: 5px;
-    max-width: 200px;
-    text-align: center;
-}
-
-.product-image {
-    max-width: 100%;
-    height: auto;
-    border-radius: 5px;
-}

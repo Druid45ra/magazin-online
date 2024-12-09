@@ -19,22 +19,17 @@
     </header>
     <main>
       <h2>Produse Disponibile</h2>
-      <div class="product-list">
-        {% for produs in produse %}
-        <div class="product-item">
-          <h3>{{ produs.name }}</h3>
-          <p>{{ produs.description }}</p>
-          <p>Price: {{ produs.price }} RON</p>
-          {% if produs.image_path %}
-          <img
-            src="{{ url_for('static', filename=produs.image_path.split('static/')[1]) }}"
-            alt="{{ produs.name }}"
-            style="width: 200px; height: auto"
-          />
-          {% endif %}
-        </div>
-        {% endfor %}
+      {% for produs in produse %}
+      <div class="product">
+        <h3>{{ produs['name'] }}</h3>
+        <p>Preț: {{ produs['price'] }} RON</p>
+        <a href="/produs/{{ produs['id'] }}">Vezi detalii</a>
+        <!-- Formular pentru adăugare în coș -->
+        <form action="/add_to_cart/{{ produs['id'] }}" method="POST">
+          <button type="submit">Adaugă în coș</button>
+        </form>
       </div>
+      {% endfor %}
     </main>
 
     <footer>

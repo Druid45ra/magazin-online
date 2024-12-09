@@ -1,0 +1,25 @@
+{% extends "base.html" %} {% block content %}
+<div class="container">
+  <h2>Adaugă Produs Nou</h2>
+  <form method="POST" enctype="multipart/form-data">
+    {{ form.csrf_token }}
+    <div>
+      <label>Nume Produs</label>
+      <input type="text" name="name" required />
+    </div>
+    <div>
+      <label>Preț</label>
+      <input type="number" name="price" step="0.01" required />
+    </div>
+    <div>
+      <label>Descriere</label>
+      <textarea name="description"></textarea>
+    </div>
+    <div>
+      <label>Imagine Produs</label>
+      <input type="file" name="image" accept="image/*" required />
+    </div>
+    <button type="submit">Adaugă Produs</button>
+  </form>
+</div>
+{% endblock %}
