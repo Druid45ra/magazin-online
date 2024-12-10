@@ -8,6 +8,7 @@ import logging
 from werkzeug.utils import secure_filename
 from models import db, User, Product, CartItem
 from forms import ProductForm, LoginForm, RegistrationForm
+from flask_migrate import Migrate
 
 # Configurarea aplicației
 app = Flask(__name__)
@@ -22,15 +23,31 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Inițializare extensii
-db.init_app(app)
+db.init_app(app)  # Asigură-te că folosești instanța corectă
 bcrypt = Bcrypt(app)
 csrf = CSRFProtect(app)
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
 
+# Inițializare Flask-Migrate
+migrate = Migrate(app, db)
+
 # Crearea folderului pentru încărcare imagini
-if not os.path.exists(app.config['UPLOAD_FOLDER']):
-    os.makedirs(app.config['UPLOAD_FOLDER'])
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+# Configurări pentru încărcarea fișierelor
+UPLOAD_FOLDER = 'static/uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+# Creează folderul de încărcare dacă nu există
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -129,6 +146,10 @@ def logout():
     logout_user()
     flash('Te-ai deconectat cu succes', 'success')
     return redirect(url_for('login'))
+
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
 
 # Crearea bazei de date
 with app.app_context():

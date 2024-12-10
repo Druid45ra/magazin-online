@@ -27,7 +27,7 @@
           <p>Price: {{ produs.price }} RON</p>
           {% if produs.image_path %}
           <img
-            src="{{ url_for('static', filename=produs.image_path.split('static/')[1]) }}"
+            src="{{ url_for('static', filename='uploads/' + produs.image_path) }}"
             alt="{{ produs.name }}"
             style="width: 200px; height: auto"
           />
@@ -42,3 +42,4 @@
     </footer>
   </body>
 </html>
+
