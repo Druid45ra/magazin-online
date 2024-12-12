@@ -6,3 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+fetch('/add_product', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token }}'  // Asigură-te că este inclus tokenul
+    },
+    body: JSON.stringify(data)
+});

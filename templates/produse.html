@@ -32,6 +32,14 @@
             style="width: 200px; height: auto"
           />
           {% endif %}
+          <form
+            action="{{ url_for('add_to_cart', product_id=produs.id) }}"
+            method="POST"
+          >
+            {{ form.hidden_tag() }}
+            <!-- Folosește hidden_tag() pentru a include tokenul CSRF -->
+            <button type="submit">Adaugă în coș</button>
+          </form>
         </div>
         {% endfor %}
       </div>
@@ -42,4 +50,3 @@
     </footer>
   </body>
 </html>
-

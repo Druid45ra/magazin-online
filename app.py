@@ -7,23 +7,20 @@ import os
 import logging
 from werkzeug.utils import secure_filename
 from models import db, User, Product, CartItem
-from forms import ProductForm, LoginForm, RegistrationForm
+from forms import ProductForm, LoginForm, RegistrationForm, AddToCartForm
 from flask_migrate import Migrate
+from config import Config  # Import config
 
 # Configurarea aplicației
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', os.urandom(24))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
-app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
+app.config.from_object(Config)  # Load configuration from config.py
 
 # Configurare logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Inițializare extensii
-db.init_app(app)  # Asigură-te că folosești instanța corectă
+db.init_app(app)
 bcrypt = Bcrypt(app)
 csrf = CSRFProtect(app)
 login_manager = LoginManager(app)
@@ -39,28 +36,17 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# Configurări pentru încărcarea fișierelor
-UPLOAD_FOLDER = 'static/uploads'
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
-# Creează folderul de încărcare dacă nu există
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
-
-# Funcții utile
 def save_product_image(image):
-    if image and '.' in image.filename and \
-       image.filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']:
+    if allowed_file(image.filename):
         filename = secure_filename(image.filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         image.save(filepath)
+        app.logger.info(f"Imaginea a fost salvată la: {filepath}")
         return f'uploads/{filename}'
+    app.logger.error("Imaginea nu a fost salvată, format neacceptat.")
     return None
 
 # Rutele aplicației
@@ -71,7 +57,8 @@ def index():
 @app.route('/produse')
 def produse():
     produse = Product.query.all()
-    return render_template('produse.html', produse=produse)
+    form = AddToCartForm()  # Creează o instanță a formularului
+    return render_template('produse.html', produse=produse, form=form)
 
 @app.route('/cart')
 @login_required
@@ -82,6 +69,11 @@ def cart():
 @app.route('/add_to_cart/<int:product_id>', methods=['POST'])
 @login_required
 def add_to_cart(product_id):
+    if not request.form.get('csrf_token'):
+        app.logger.error("CSRF token is missing.")
+        flash('Token CSRF lipsă. Te rog să reîncerci.', 'danger')
+        return redirect(url_for('produse'))
+
     product = Product.query.get_or_404(product_id)
     existing_cart_item = CartItem.query.filter_by(user_id=current_user.id, product_id=product_id).first()
     if existing_cart_item:
@@ -92,25 +84,6 @@ def add_to_cart(product_id):
     db.session.commit()
     flash('Produs adăugat în coș', 'success')
     return redirect(url_for('produse'))
-
-@app.route('/add_product', methods=['GET', 'POST'])
-@login_required
-def add_product():
-    form = ProductForm()
-    if form.validate_on_submit():
-        image = form.image.data
-        image_path = save_product_image(image) if image else None
-        new_product = Product(
-            name=form.name.data, 
-            price=form.price.data, 
-            description=form.description.data,
-            image_path=image_path
-        )
-        db.session.add(new_product)
-        db.session.commit()
-        flash('Produs adăugat cu succes!', 'success')
-        return redirect(url_for('produse'))
-    return render_template('add_product.html', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -139,6 +112,15 @@ def register():
         flash('Înregistrare reușită!', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    db.session.rollback()
+    return render_template('500.html'), 500
 
 @app.route('/logout')
 @login_required

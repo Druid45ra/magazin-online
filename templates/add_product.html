@@ -1,15 +1,37 @@
-<form method="POST" enctype="multipart/form-data">
-    <label for="name">Nume produs:</label>
-    <input type="text" name="name" id="name" required>
-
-    <label for="price">Preț:</label>
-    <input type="text" name="price" id="price" required>
-
-    <label for="description">Descriere:</label>
-    <textarea name="description" id="description" required></textarea>
-
-    <label for="image">Imagine produs:</label>
-    <input type="file" name="image" id="image" accept="image/*" required>
-
-    <button type="submit">Adaugă produs</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Adaugă Produs - Magazin Online</title>
+  </head>
+  <body>
+    <h2>Adaugă Produs</h2>
+    <form
+      method="POST"
+      action="{{ url_for('add_product') }}"
+      enctype="multipart/form-data"
+    >
+      {{ form.hidden_tag() }}
+      <div class="form-group">
+        <label for="name">Nume Produs</label>
+        {{ form.name(class="form-control", placeholder="Introdu numele
+        produsului") }}
+      </div>
+      <div class="form-group">
+        <label for="price">Preț</label>
+        {{ form.price(class="form-control", placeholder="Introdu prețul") }}
+      </div>
+      <div class="form-group">
+        <label for="description">Descriere</label>
+        {{ form.description(class="form-control", placeholder="Introdu
+        descrierea") }}
+      </div>
+      <div class="form-group">
+        <label for="image">Imagine</label>
+        {{ form.image(class="form-control") }}
+      </div>
+      <div class="form-group">{{ form.submit(class="btn btn-primary") }}</div>
+    </form>
+  </body>
+</html>

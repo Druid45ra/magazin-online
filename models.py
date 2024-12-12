@@ -15,7 +15,7 @@ class Product(db.Model):
     name = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Float, nullable=False)
     description = db.Column(db.Text, nullable=False)
-    image = db.Column(db.String(100), nullable=False)  # Salvează numele fișierului imaginii
+    image_path = db.Column(db.String(100), nullable=False)
 
 class CartItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
