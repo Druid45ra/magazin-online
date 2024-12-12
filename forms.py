@@ -25,3 +25,6 @@ class RegistrationForm(FlaskForm):
     ])
     confirm_password = PasswordField('Confirm Password')
     submit = SubmitField('Register')
+    
+class AddToCartForm(FlaskForm):
+    submit = SubmitField('Adaugă în coș')
