@@ -139,4 +139,6 @@ with app.app_context():
     logger.info("Bazele de date au fost create cu succes.")
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    debug_mode = os.getenv('FLASK_ENV') == 'development'
+
+    app.run(debug=debug_mode)
