@@ -1,45 +1,124 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Produse - Magazin Online</title>
-    <link rel="stylesheet" href="/static/css/style.css" />
-  </head>
-  <body>
-    <header>
-      <nav>
+    <style>
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+        }
+        .product-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+        .product-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+            color: #333;
+            text-align: center;
+        }
+        .product-description {
+            color: #666;
+            text-align: center;
+            margin: 0.5rem 0;
+        }
+        .product-price {
+            font-size: 1.4rem;
+            color: #e44d26;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+        .add-to-cart-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+            width: 100%;
+            margin-top: auto;
+        }
+        .add-to-cart-btn:hover {
+            background-color: #45a049;
+        }
+        nav {
+            background-color: #333;
+            padding: 1rem;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        nav a:hover {
+            color: #4CAF50;
+        }
+        .page-title {
+            text-align: center;
+            color: #333;
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <nav>
         <ul>
-          <li><a href="/">Acasă</a></li>
-          <li><a href="/produse">Produse</a></li>
-          <li><a href="/cart">Coș</a></li>
-          <li><a href="/contact">Contact</a></li>
+            <li><a href="{{ url_for('index') }}">Acasă</a></li>
+            <li><a href="{{ url_for('produse') }}">Produse</a></li>
+            <li><a href="{{ url_for('cart') }}">Coș</a></li>
+            <li><a href="{{ url_for('contact') }}">Contact</a></li>
         </ul>
-      </nav>
-    </header>
-    <main>
-      <h2>Produse Disponibile</h2>
-      <div class="product-list">
+    </nav>
+
+    <h1 class="page-title">Produse Disponibile</h1>
+
+    <div class="product-grid">
         {% for produs in produse %}
-        <div class="product-item">
-          <h3>{{ produs.name }}</h3>
-          <p>{{ produs.description }}</p>
-          <p>Price: {{ produs.price }} RON</p>
-          {% if produs.image_path %}
-          <img
-            src="{{ url_for('static', filename='uploads/' + produs.image_path) }}"
-            alt="{{ produs.name }}"
-            style="width: 200px; height: auto"
-          />
-          {% endif %}
+        <div class="product-card">
+            <img class="product-image" 
+                 src="{{ url_for('static', filename=produs.image) }}" 
+                 alt="{{ produs.name }}"
+                 onerror="this.src='{{ url_for('static', filename='images/1060-536x354-blur_2.jpg') }}'">
+            <h2 class="product-title">{{ produs.name }}</h2>
+            <p class="product-description">{{ produs.description }}</p>
+            <p class="product-price">{{ "%.2f"|format(produs.price) }} RON</p>
+            <form action="{{ url_for('add_to_cart', product_id=produs.id) }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="add-to-cart-btn">Adaugă în coș</button>
+            </form>
         </div>
         {% endfor %}
-      </div>
-    </main>
-
+    </div>
     <footer>
       <p>&copy; 2024 Magazin Online</p>
     </footer>
-  </body>
+</body>
 </html>
-
