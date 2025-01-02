@@ -86,9 +86,11 @@ def add_to_cart(product_id):
     existing_cart_item = CartItem.query.filter_by(user_id=current_user.id, product_id=product_id).first()
     if existing_cart_item:
         existing_cart_item.quantity += 1
+        logger.info(f"Updated quantity for product {product_id} in cart.")
     else:
         new_cart_item = CartItem(user_id=current_user.id, product_id=product_id, quantity=1)
         db.session.add(new_cart_item)
+        logger.info(f"Added product {product_id} to cart.")
     db.session.commit()
     flash('Produs adăugat în coș', 'success')
     return redirect(url_for('produse'))
